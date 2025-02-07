@@ -3,6 +3,7 @@ colorama==0.4.6
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
+gunicorn==23.0.0
 idna==3.10
 itsdangerous==2.2.0
 MarkupSafe==3.0.2
@@ -20,3 +21,4 @@ typing_extensions==4.12.2
 tzdata==2025.1
 urllib3==2.3.0
 zipp==3.21.0
+"gunicorn" 

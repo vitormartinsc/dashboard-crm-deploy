@@ -110,6 +110,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 # Criar o aplicativo Dash
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server  # Esta linha é crucial para o deploy com Gunicorn
 app.title = "Dashboard de Stage Detail"
 
 # Valor inicial do filtro de data
@@ -209,10 +210,8 @@ def update_chart(start_dates, end_dates):
     return fig
 
 
-
-
-# Rodar o app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    port = int(os.environ.get('PORT', 8050))
+    app.run_server(debug=False, host='0.0.0.0', port=port)
 
     

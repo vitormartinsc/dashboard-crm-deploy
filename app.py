@@ -73,6 +73,8 @@ def process_data(deals):
     return df
 
 def process_line_data(df):
+    df = df.copy()
+    
     # Transformação da coluna 'stage_detail'
     df['stage_detail'] = df['stage_detail'].replace({
         'CONTATO': '1.1 LEADS',
@@ -84,6 +86,8 @@ def process_line_data(df):
     
 
 def process_bar_data(df):
+    df = df.copy()
+    
     df_filtered = df[(df['stage_name'] == 'AMBULANTE ESSENCIAL') | df['description'].str.contains("CA", na=False)]
 
 

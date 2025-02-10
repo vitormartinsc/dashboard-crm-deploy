@@ -2,6 +2,7 @@ import dash
 from dash import Dash, html, dcc, Input, Output, State
 import pandas as pd
 import requests
+import os
 from datetime import datetime, timedelta
 import plotly.express as px
 
@@ -203,7 +204,7 @@ def update_chart(start_dates, end_dates):
         if start_date and end_date:
             start_date = datetime.fromisoformat(start_date).date()
             end_date = datetime.fromisoformat(end_date).date()
-            filtered_df = df_line[(df_line['date_created'] >= start_date) & (df['date_created'] <= end_date)]
+            filtered_df = df_line[(df_line['date_created'] >= start_date) & (df_line['date_created'] <= end_date)]
             filtered_df = filtered_df.loc[filtered_df.groupby('id')['date_created'].idxmax()]
 
 

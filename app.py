@@ -127,16 +127,6 @@ df_line = process_line_data(df)
 df_line['date_created'] = pd.to_datetime(df_line['date_created']).dt.date
 df_bar = process_bar_data(df)
 
-# Função de processamento da linha de dados
-def process_line_data(df):
-    df = df.copy()
-    df['stage_detail'] = df['stage_detail'].replace({
-        'CONTATO': '1.1 LEADS',
-        'TYPEFORM': '2.1 VALIDAÇÃO',
-        'CONTRATO': '3.1 ATIVOS'
-    })
-    df = df[~df['stage_detail'].str.startswith(('5', '6'))]
-    return df
 
 def sort_stage_detail(stage_detail):
     """Ordena os valores de 'stage_detail' assumindo o formato numérico 'X.Y'"""

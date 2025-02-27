@@ -35,7 +35,7 @@ def process_data(deals, filter_by_status='Em andamento'):
     deal_by_stage = {
         'stage_detail': [], 'stage_name': [], 'stage_number': [], 'stage_status': [],
         'person': [], 'title': [], 'date_created': [], 'date_lost': [], 'date_won': [],
-        'organization': [], 'description': []
+        'organization': [], 'description': [], 'loss_reason': []
     }
 
     for deal in deals:
@@ -43,6 +43,11 @@ def process_data(deals, filter_by_status='Em andamento'):
         deal_by_stage['stage_number'].append(int(deal['dealStage']['sequence']))
         deal_by_stage['stage_name'].append(deal['dealStage']['funnel']['name'])
         deal_by_stage['stage_status'].append(deal['dealStatus']['name'])
+        if deal['lossReason']:
+            deal_by_stage['loss_reason'].append(deal['lossReason']['name'])
+        else:
+            deal_by_stage['loss_reason'].append(None)
+        
         if deal['person']:
             deal_by_stage['person'].append(deal.get('person', {}).get('id'))
         else:
@@ -428,17 +433,17 @@ def update_data_table(selected_stage_name):
     Input('stage-detail-filter', 'value')
 )
 def update_bar_chart(selected_stage_name):
+    filtered_df = df.copy()
     # Filtrar os dados conforme a seleção do dropdown
-    if selected_stage_name == 'Geral':
-        filtered_df = df_bar.copy()  # Mantém todos os dados
-    else:
-        filtered_df = (
-            df[df['stage_name'] == selected_stage_name]  # Filtra pelo stage_name
-            .loc[lambda df_: df_.groupby('id')['date_created'].idxmax()]  # Mantém o último registro por ID
-            .dropna(subset=['id'])  # Remove linhas com id nulo
-            ['stage_detail'].value_counts()  # Conta os valores de stage_detail
-            .reset_index(name='count')  # Define o nome correto da coluna gerada
-        )
+    if selected_stage_name != 'Geral':
+        filtered_df = filtered_df[filtered_df['stage_name'] == selected_stage_name]
+        
+    filtered_df = (filtered_df
+        .loc[lambda df_: df_.groupby('id')['date_created'].idxmax()]  # Mantém o último registro por ID
+        .dropna(subset=['id'])  # Remove linhas com id nulo
+        ['stage_detail'].value_counts()  # Conta os valores de stage_detail
+        .reset_index(name='count')  # Define o nome correto da coluna gerada
+    )
 
     # Criar o gráfico atualizado
     fig = px.bar(
@@ -455,6 +460,7 @@ def update_bar_chart(selected_stage_name):
         ),# Ordenação personalizada,
         xaxis_title="Estágio no Funil",
         yaxis_title="Quantidade de Clientes",
+        yaxis=dict(range=[0, filtered_df['count'].max() * 1.2]),  # Adiciona 20% de espaço extra no topo
         font={'color': '#003366'}
 
     )

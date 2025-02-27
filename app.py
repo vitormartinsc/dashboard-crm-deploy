@@ -62,6 +62,8 @@ def process_data(deals, filter_by_status='Em andamento'):
     # Criar as colunas 'id' e 'type'
     df['id'] = df['person'].fillna(df['organization'])
     df['type'] = df['person'].apply(lambda x: 'person' if pd.notna(x) else 'organization')
+    
+    
 
     # Remover as colunas 'person' e 'organization'
     df = df.drop(columns=['person', 'organization'])
@@ -70,6 +72,9 @@ def process_data(deals, filter_by_status='Em andamento'):
 
     # Filtragem por data
     df['date_created'] = pd.to_datetime(df['date_created']).dt.date
+    df['date_won'] = pd.to_datetime(df['date_won']).dt.date
+    df['date_lost'] = pd.to_datetime(df['date_lost']).dt.date
+    
     if filter_by_status:
         df = df[df['stage_status'] == 'Em andamento']
     
